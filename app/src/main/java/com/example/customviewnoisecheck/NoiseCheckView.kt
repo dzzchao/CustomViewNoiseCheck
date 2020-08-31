@@ -33,9 +33,9 @@ fun Int.px2dp(): Int {
  *
  */
 class NoiseCheckView @JvmOverloads constructor(
-        context: Context,
-        attrs: AttributeSet? = null,
-        defStyleAttr: Int = 0
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
     private val mainPaint = Paint()
@@ -105,16 +105,18 @@ class NoiseCheckView @JvmOverloads constructor(
 
 
     fun start() {
-        object : CountDownTimer(3000, 100) {
+        var tempLongX = -1L
+        object : CountDownTimer(3000, 10) {
             override fun onTick(millisUntilFinished: Long) {
                 val long = millisUntilFinished / 100
-                val intX = 30 - long
-                log("long = $long")
-                log("intX = $intX")
+                if (tempLongX == long) {
+                    return
+                }
+                tempLongX = long
+                val intX = 30 - tempLongX
                 outCircleNum = (intX / 30.0 * 72).toInt()
                 inCircleNum = (intX / 30.0 * 60).toInt()
                 log("动画进行中 $outCircleNum $inCircleNum")
-
                 mDecibel = (60..80).random().toString()
                 invalidate()
             }
@@ -139,13 +141,25 @@ class NoiseCheckView @JvmOverloads constructor(
         shortPaint.color = circleInColor
         canvas.save()
         for (i in 1..outCircleNum) {
-            canvas.drawLine(centerX, (centerY * 0.2).toFloat(), centerX, (centerY * 0.05).toFloat(), mainPaint)
+            canvas.drawLine(
+                centerX,
+                (centerY * 0.2).toFloat(),
+                centerX,
+                (centerY * 0.05).toFloat(),
+                mainPaint
+            )
             canvas.rotate(5f, centerX, centerY)
         }
         canvas.restore()
         canvas.save()
         for (i in 1..inCircleNum) {
-            canvas.drawLine(centerX, (centerY * 0.3).toFloat(), centerX, (centerY * 0.25).toFloat(), shortPaint)
+            canvas.drawLine(
+                centerX,
+                (centerY * 0.3).toFloat(),
+                centerX,
+                (centerY * 0.25).toFloat(),
+                shortPaint
+            )
             canvas.rotate(6f, centerX, centerY)
         }
         canvas.restore()
